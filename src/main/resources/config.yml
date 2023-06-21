@@ -1,5 +1,5 @@
 # --- DO NOT TOUCH THIS ----------------
-config-version: 2
+config-version: 1
 # --------------------------------------
 # COLOUR FORMATTING GUIDE (Colours require string to be surrounded by quotes)
 #  &0	Black
@@ -31,11 +31,11 @@ config-version: 2
 # Example for Pink: &#FFC0CB or &#ffc0cb
 # --------------------------------------
 
-# Name that appears in /smp command
-name: '&#f50057&LSMP'
+# Name that appears in /teams command
+name: '&B&LTeams'
 
-# Mostly for logging purposes
-cmd_header: '&A[&FSD_SMP&A]'
+# Header that appears in messages sent to the player
+cmd_header: '&B[&FTeams&B]'
 
-# Teams
-teams: [ ]
+# Scoreboard Update Interval
+scoreboard_update: 20

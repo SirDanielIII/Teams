@@ -1,6 +1,6 @@
-package com.sirdanieliii.teams.events;
+package com.sirdanieliii.teams;
 
-import com.sirdanieliii.teams.commands.configuration.ConfigYML;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -10,8 +10,11 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
+import static com.sirdanieliii.teams.BasicTeam.validConfig;
 import static com.sirdanieliii.teams.Teams.getThisPlugin;
-import static com.sirdanieliii.teams.commands.configuration.ConfigManager.*;
+import static com.sirdanieliii.teams.Utilities.replaceStr;
+import static com.sirdanieliii.teams.Utilities.translateMsgClr;
+import static com.sirdanieliii.teams.configuration.ConfigManager.*;
 import static com.sirdanieliii.teams.events.Scoreboards.scoreboard;
 
 public class BasicTeam {
@@ -40,17 +43,16 @@ public class BasicTeam {
     }
 
     /**
-     * Determine if an entry in teams.yml is valid or not by checking its colour value
+     * Determine if an entry in teams.yml is valid or not (use this when loading teams from a config)
      *
      * @param key team name
      * @return true if valid, false otherwise
      */
     public static boolean validConfig(String key) {
-        FileConfiguration config = configTeams.getConfig();
         try {
-            Integer.parseInt(key); // See if key is a number
-            String clr = config.getString(String.format("teams.%s.colour", key));
-            if (clr != null) return ChatColor.getByChar(clr) != null; // Validate colour from string
+            int number = Integer.parseInt(key); // See if key is a number
+            String clr = configTeams.getConfig().getString(String.format("teams.%s.colour", key));
+            if (clr != null && number != 0) return ChatColor.getByChar(clr) != null; // Validate colour from string
         } catch (NullPointerException | NumberFormatException ignored) {
         }
         return false; // Return false by default (or if clr == null)
@@ -64,17 +66,47 @@ public class BasicTeam {
         addTeamToConfig(this);
     }
 
-    public void remove() {
+    public void disband(Player player) {
+        // Send message
+        List<String> players = configTeams.getConfig().getStringList(String.format("teams.%s.players", getNumber()));
+        for (String i : players) {
+            Player recipient = Bukkit.getPlayer(i);
+            if (recipient == null) continue;
+            recipient.sendMessage(translateMsgClr(cmdHeader) + " " + replaceStr(messages.get("disbanded_team"),
+                    "{player}", player.getName(), "{team}", toString()));
+            pluginPlayerData.put(recipient, null);
+        }
+        // Remove team
         team.unregister();
         pluginTeams.remove(number);
-        removeTeamFromConfig(this);
+        configTeams.deleteKey(String.format("teams.%s.colour", getNumber()));
+        getThisPlugin().getLogger().info(String.format("Removed %s from teams.yml", this));
     }
 
     public void addPlayer(boolean addToConf, Player... players) {
         for (Player p : players) {
-            team.addEntry(p.getName());
+            team.addEntry(p.getUniqueId().toString());
             pluginPlayerData.put(p, this);
-            if (addToConf) addToConfigStrList(configTeams, String.format("teams.%s.players", number), p.getUniqueId().toString());
+            if (addToConf) {
+                addToConfigStrList(String.format("teams.%s.players", number), p.getUniqueId().toString());
+            }
+        }
+    }
+
+    public void removePlayer(Player player) {
+        team.removeEntry(player.getUniqueId().toString());
+        pluginPlayerData.put(player, null);
+        removeFromConfigStrList(String.format("teams.%d.players", getNumber()), player.getUniqueId().toString());
+    }
+
+    public void announceMsg(String msg, Player... ignore) {
+        // Send message
+        List<String> players = configTeams.getConfig().getStringList(String.format("teams.%s.players", getNumber()));
+        List<Player> ignoredPlayers = new ArrayList<>(List.of(ignore));
+        for (String i : players) {
+            Player recipient = Bukkit.getPlayer(i);
+            if (recipient == null || ignoredPlayers.contains(recipient)) continue;
+            recipient.sendMessage(translateMsgClr(msg));
         }
     }
 
@@ -84,10 +116,6 @@ public class BasicTeam {
 
     public ChatColor getColour() {
         return colour;
-    }
-
-    public Team getTeam() {
-        return team;
     }
 
     @Nullable
@@ -120,15 +148,10 @@ public class BasicTeam {
     }
 
     public static void addTeamToConfig(BasicTeam team) {
-        FileConfiguration config = configTeams.getConfig();
-        config.set(String.format("teams.%s.colour", team.getNumber()), team.getColour().name());
-        config.set(String.format("teams.%s.players", team.getNumber()), new ArrayList<>());
+        configTeams.getConfig().set(String.format("teams.%s.colour", team.getNumber()), team.getColour().name());
+        configTeams.getConfig().set(String.format("teams.%s.players", team.getNumber()), new ArrayList<>());
+        configTeams.save();
         getThisPlugin().getLogger().info(String.format("Added Team %s to teams.yml", team.getNumber()));
-    }
-
-    public static void removeTeamFromConfig(BasicTeam team) {
-        configTeams.deleteKey(String.format("teams.%s.colour", team.getNumber()));
-        getThisPlugin().getLogger().info(String.format("Removed Team %s from teams.yml", team.getNumber()));
     }
 
     public static int parseNumber(String s) {
@@ -159,21 +182,31 @@ public class BasicTeam {
         return 1;
     }
 
-    public static void addToConfigStrList(ConfigYML config, String path, String entry) {
-        List<String> lst = config.getConfig().getStringList(path);
+    public static void addToConfigStrList(String path, String entry) {
+        List<String> lst = configTeams.getConfig().getStringList(path);
         lst.add(entry);
-        config.getConfig().set(path, lst);
+        configTeams.getConfig().set(path, lst);
+        configTeams.save();
+    }
+
+    public static void removeFromConfigStrList(String path, String entry) {
+        List<String> lst = configTeams.getConfig().getStringList(path);
+        lst.remove(entry);
+        configTeams.getConfig().set(path, lst);
+        configTeams.save();
     }
 
     @Nullable
     public static BasicTeam detectPlayerTeam(Player player) {
         for (String num : Objects.requireNonNull(configTeams.getConfig().getConfigurationSection("teams")).getKeys(false)) {
-            List<String> players = configTeams.getConfig().getStringList(String.format("teams.%s.players", num));
-            for (String uuid : players) {
-                if (player.getUniqueId().toString().equalsIgnoreCase(uuid)) {
-                    return new BasicTeam(scoreboard,
-                            Integer.parseInt(num),
-                            getChatColor(Objects.requireNonNull(configTeams.getConfig().getString(String.format("teams.%s.colour", num)))));
+            if (validConfig(num)) {
+                List<String> players = configTeams.getConfig().getStringList(String.format("teams.%s.players", num));
+                for (String uuid : players) {
+                    if (player.getUniqueId().toString().equalsIgnoreCase(uuid)) {
+                        return new BasicTeam(scoreboard,
+                                Integer.parseInt(num),
+                                getChatColor(Objects.requireNonNull(configTeams.getConfig().getString(String.format("teams.%s.colour", num)))));
+                    }
                 }
             }
         }

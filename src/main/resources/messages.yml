@@ -3,7 +3,7 @@ config-version: 1
 
 teams_create: "/teams create [colour]"
 teams_disband: "/teams disband"
-teams_invite: "/teams invite [player(s)]"
+teams_invite: "/teams invite [...players]"
 teams_join: "/teams join [number]"
 teams_leave: "/teams leave"
 teams_reload: "/teams reload"
@@ -41,8 +41,25 @@ teams_reload: "/teams reload"
 error_header: "&4[&C&L!&R&4]"
 error_clr: "&C"
 
-# Command Errors
-missing_colour: "Missing colour!"
+# General Messages
+announce_new_team: "&E{player} &Fhas created {team}"
+created_team: "&AYou have successfully created and joined {team}"
+disbanded_team: "&E{player} &Fhas &Cdisbanded {team}"
+has_joined_team: "&E{player} &Fhas &Ajoined &Fthe team"
+has_kicked_someone_out_of_team: "&E{player_1} has &Ckicked {player_2} &Fout of the team"
+has_left_team: "&E{player} has &Cleft &Fthe team"
+invite_success: "&AInvite successfully sent to {player}"
+joined_team: "You have &Ajoined {team}"
+left_team: "You have &Cleft {team}"
+kicked_player: "You have &Ckicked &E{player} &Ffrom {team}"
+kicked_from_team: "&E{player} &Fhas &Ckicked you &Ffrom {team}"
+
+# Errors
+invalid_team_number: "That is not a valid team number!"
+missing_permission: "You do not have permission to do that!"
+missing_players: "Missing players!"
 not_in_team: "You are not currently in a team!"
+currently_in_team: "You are already in a team!"
 not_valid_colour: "That is not a valid colour!"
 not_valid_team: "That is not a valid team!"
+too_many_arguments: "Too many arguments!"

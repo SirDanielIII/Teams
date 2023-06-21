@@ -1,16 +1,17 @@
-package com.sirdanieliii.teams.commands.subcommands.teams;
+package com.sirdanieliii.teams.commands.subcommands;
 
+import com.sirdanieliii.teams.BasicTeam;
 import com.sirdanieliii.teams.commands.SubCommand;
 import org.bukkit.entity.Player;
-import org.bukkit.scoreboard.Team;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.sirdanieliii.teams.BasicTeam.*;
+import static com.sirdanieliii.teams.Utilities.replaceStr;
 import static com.sirdanieliii.teams.Utilities.translateMsgClr;
-import static com.sirdanieliii.teams.commands.CommandManager.cmdHeader;
-import static com.sirdanieliii.teams.commands.configuration.ConfigManager.*;
-import static com.sirdanieliii.teams.events.Scoreboards.addAllPlayersToScoreboard;
+import static com.sirdanieliii.teams.configuration.ConfigManager.*;
+import static com.sirdanieliii.teams.events.Scoreboards.scoreboard;
 
 public class Join extends SubCommand {
     @Override
@@ -35,37 +36,39 @@ public class Join extends SubCommand {
 
     @Override
     public boolean perform(Player player, String[] args) {
-        if (args.length == 2) {
-            try {
-                int teamNumber = Integer.parseInt(args[1]) - 1;
-                if (teamNumber >= numberOfTeams() - 1) {
-                    player.sendMessage(translateMsgClr(errorMessage("not_valid_team")));
-                    return false;
-                }
-                Team team = pluginTeams.get(teamNumber);
-                team.addEntry(player.getName());
-                pluginData.put(player, team);
-                List<String> players = teams.getConfig().getStringList(String.format("teams.%s.players", teamNumber));
-                players.add(player.getUniqueId().toString());
-                teams.getConfig().set(String.format("teams.%s.players", teamNumber), players);
-                teams.save();
-                addAllPlayersToScoreboard();
-                player.sendMessage(translateMsgClr(cmdHeader("teams") + "you have joined Team" + team.getName()));
-            } catch (NumberFormatException e) {
-                player.sendMessage(errorMessage("not_valid_team"));
-            }
+        if (!(player.hasPermission("teams.join"))) {
+            player.sendMessage(errorMessage("permission"));
+            return false;
         }
-        return true;
+        BasicTeam t = pluginPlayerData.get(player);
+        if (t == null) {
+            player.sendMessage("not_in_team");
+            return false;
+        }
+        if (args.length == 2) { // teams join [number]
+            int teamNumber = parseNumber(args[1]);
+            if (teamNumber == 0) {
+                player.sendMessage(errorMessage("invalid_team_number"));
+                return false;
+            }
+            BasicTeam team = new BasicTeam(scoreboard, teamNumber);
+            team.announceMsg(replaceStr(messages.get("has_joined_team"), "{player}", player.getName()));
+            team.addPlayer(true, player);
+            player.sendMessage(translateMsgClr(cmdHeader + " " + messages.get("joined_team")));
+        } else if (args.length > 2) {
+            player.sendMessage(errorMessage("too_many_arguments"));
+        }
+        return false;
     }
 
     @Override
     public List<String> getSubcommandArgs(Player player, String[] args) {
-        List<String> teams = new ArrayList<>();
+        List<String> lst = new ArrayList<>();
         if (args.length == 2) {
-            for (int i = 1; i <= numberOfTeams(); i++) {
-                teams.add(String.valueOf(i));
+            for (int i : getAllTeamsOrdered()) {
+                lst.add(String.valueOf(i));
             }
         }
-        return teams;
+        return lst;
     }
 }

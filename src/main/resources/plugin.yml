@@ -2,6 +2,35 @@ name: Teams
 version: '${project.version}'
 main: com.sirdanieliii.teams.Teams
 api-version: 1.16
-authors: [Sir Daniel III]
+authors: [ Sir Daniel III ]
 description: Quick and simple plugin to group up players into teams (cosmetic only- does not alter any game mechanics)
 website: https://www.youtube.com/@SirDanielIII/
+commands:
+  teams:
+    description: A family of commands that allows you to create, disband, invite, join, kick, and leave teams
+    usage: /teams create|disband|invite|join|kick|leave
+  teamsreload:
+    description: Reloads all configs, settings and tasks for this plugin
+    usage: /teamsreload
+permissions:
+  teams.create:
+    description: Create a team
+    default: true
+  teams.disband:
+    description: Disband a team
+    default: true
+  teams.invite:
+    description: Invite a player to the team
+    default: true
+  teams.join:
+    description: Join a team
+    default: true
+  teams.kick:
+    description: Kick a player out of the team
+    default: true
+  teams.leave:
+    description: Leave the team
+    default: true
+  teams.admin:
+    description: Allows use of plugin admin commands, such as teamsreload
+    default: op

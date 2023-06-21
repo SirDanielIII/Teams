@@ -1,4 +1,4 @@
-package com.sirdanieliii.teams.commands.configuration;
+package com.sirdanieliii.teams.configuration;
 
 import org.bukkit.configuration.file.FileConfiguration;
 

@@ -1,11 +1,6 @@
 package com.sirdanieliii.teams.commands;
 
-import com.sirdanieliii.SD_SMP.commands.subcommands.coords.coordsClear;
-import com.sirdanieliii.SD_SMP.commands.subcommands.coords.coordsList;
-import com.sirdanieliii.SD_SMP.commands.subcommands.coords.coordsSend;
-import com.sirdanieliii.SD_SMP.commands.subcommands.coords.coordsSet;
-import com.sirdanieliii.SD_SMP.commands.subcommands.death.*;
-import com.sirdanieliii.SD_SMP.commands.subcommands.ivan.*;
+import com.sirdanieliii.teams.commands.subcommands.*;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -21,31 +16,22 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.sirdanieliii.SD_SMP.configuration.ConfigManager.blockFooter;
-import static com.sirdanieliii.SD_SMP.utilities.Utilities.translateMsgClr;
-import static com.sirdanieliii.SD_SMP.utilities.Utilities.translateMsgClrComponent;
+import static com.sirdanieliii.teams.Utilities.translateMsgClr;
+import static com.sirdanieliii.teams.Utilities.translateMsgClrComponent;
+import static com.sirdanieliii.teams.configuration.ConfigManager.blockFooter;
 
 public class CommandManager implements TabExecutor {
     public static Map<String, List<SubCommand>> cmdCategories = new HashMap<>();
-    List<SubCommand> ivan = new ArrayList<>();
-    List<SubCommand> coords = new ArrayList<>();
-    List<SubCommand> death = new ArrayList<>();
+    public static List<SubCommand> teams = new ArrayList<>();
 
     public CommandManager() {
-        ivan.add(new ivanDog());
-        ivan.add(new ivanDonkey());
-        coords.add(new coordsClear());
-        coords.add(new coordsList());
-        coords.add(new coordsSend());
-        coords.add(new coordsSet());
-        death.add(new deathKDR());
-        death.add(new deathKills());
-        death.add(new deathNonPlayer());
-        death.add(new deathPlayer());
-        death.add(new deathTotal());
-        cmdCategories.put("ivan", ivan);
-        cmdCategories.put("death", death);
-        cmdCategories.put("coords", coords);
+        teams.add(new Create());
+        teams.add(new Disband());
+        teams.add(new Invite());
+        teams.add(new Join());
+        teams.add(new Kick());
+        teams.add(new Leave());
+        cmdCategories.put("teams", teams);
     }
 
     public static ArrayList<SubCommand> getSubcommands(String key) {
@@ -96,23 +82,10 @@ public class CommandManager implements TabExecutor {
         player.sendMessage(blockFooter);
     }
 
-    public static String cmdHeader(String type) {
-        return switch (type.toLowerCase()) {
-            case ("coords") -> "&6[&FCoords&6] ";
-            case ("death") -> "&4[&FDeath&4] ";
-            case ("ivan") -> "&B[&FIvan&B] ";
-            default -> "";
-        };
-    }
-
     public static String cmdClr(String type, boolean bold) {
         String s;
         switch (type.toLowerCase()) {
-            case ("coords") -> s = "&6";
-            case ("death") -> s = "&4";
-            case ("ivan") -> s = "&B";
-            case ("smp") -> s = "&#f50057";
-            case ("wand") -> s = "&D";
+            case "teams" -> s = "&B";
             default -> s = "&F";
         }
         if (bold) s += "&L";

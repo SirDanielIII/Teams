@@ -1,16 +1,14 @@
-package com.sirdanieliii.teams.commands.subcommands.teams;
+package com.sirdanieliii.teams.commands.subcommands;
 
 import com.sirdanieliii.teams.commands.SubCommand;
+import com.sirdanieliii.teams.BasicTeam;
 import org.bukkit.entity.Player;
-import org.bukkit.scoreboard.Team;
 
 import java.util.List;
-import java.util.Objects;
 
+import static com.sirdanieliii.teams.Utilities.replaceStr;
 import static com.sirdanieliii.teams.Utilities.translateMsgClr;
-import static com.sirdanieliii.teams.commands.CommandManager.cmdHeader;
-import static com.sirdanieliii.teams.commands.configuration.ConfigManager.*;
-import static com.sirdanieliii.teams.events.Scoreboards.addAllPlayersToScoreboard;
+import static com.sirdanieliii.teams.configuration.ConfigManager.*;
 
 public class Leave extends SubCommand {
     @Override
@@ -35,25 +33,18 @@ public class Leave extends SubCommand {
 
     @Override
     public boolean perform(Player player, String[] args) {
-        Team team = pluginData.get(player);
-        if (team == null) {
-            player.sendMessage(errorMessage("not_in_team"));
+        if (!(player.hasPermission("teams.leave"))) {
+            player.sendMessage(errorMessage("permission"));
             return false;
         }
-        try {
-            int teamNumber = Integer.parseInt(Objects.requireNonNull(team).getName()) - 1;
-            team.removeEntry(player.getName());
-            pluginData.put(player, null);
-
-            List<String> players = teams.getConfig().getStringList(String.format("teams.%s.players", teamNumber + 1));
-            players.remove(player.getUniqueId().toString());
-            teams.getConfig().set(String.format("teams.%s.players", teamNumber), players);
-            teams.save();
-            addAllPlayersToScoreboard();
-
-            player.sendMessage(translateMsgClr(cmdHeader("teams") + String.format("You have left Team %s", teamNumber + 1)));
-        } catch (NullPointerException | NumberFormatException ignored) {
+        BasicTeam team = pluginPlayerData.get(player);
+        if (team == null) {
+            player.sendMessage("not_in_team");
+            return false;
         }
+        team.removePlayer(player);
+        player.sendMessage(translateMsgClr(cmdHeader) + replaceStr(messages.get("left_team"), "{team}", team.toString()));
+        team.announceMsg(translateMsgClr(cmdHeader) + replaceStr(messages.get("has_left_team"), "{player}", player.getName()));
         return true;
     }
 

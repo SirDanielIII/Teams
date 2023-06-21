@@ -1,16 +1,14 @@
-package com.sirdanieliii.teams.commands.subcommands.teams;
+package com.sirdanieliii.teams.commands.subcommands;
 
 import com.sirdanieliii.teams.commands.SubCommand;
+import com.sirdanieliii.teams.BasicTeam;
 import org.bukkit.entity.Player;
-import org.bukkit.scoreboard.Team;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
-import static com.sirdanieliii.teams.Teams.getThisPlugin;
-import static com.sirdanieliii.teams.commands.configuration.ConfigManager.*;
-import static com.sirdanieliii.teams.events.Scoreboards.addAllPlayersToScoreboard;
+import static com.sirdanieliii.teams.configuration.ConfigManager.*;
+import static com.sirdanieliii.teams.BasicTeam.getAllTeamsOrdered;
 
 public class Disband extends SubCommand {
     @Override
@@ -35,31 +33,21 @@ public class Disband extends SubCommand {
 
     @Override
     public boolean perform(Player player, String[] args) {
-        Team team = pluginData.get(player);
-        if (team == null) {
-            player.sendMessage(errorMessage("not_in_team"));
+        if (!(player.hasPermission("teams.disband"))) {
+            player.sendMessage(errorMessage("permission"));
             return false;
         }
-        try {
-            teams.deleteKey(String.format("teams.%s", Integer.parseInt(Objects.requireNonNull(team).getName()) + 1));
-        } catch (NumberFormatException e) {
-            getThisPlugin().getLogger().warning("Could not delete Team " + team.getName() + " from teams.yml");
+        BasicTeam team = pluginPlayerData.get(player);
+        if (team == null) {
+            player.sendMessage("not_in_team");
+            return false;
         }
-        team.unregister();
-        addAllPlayersToScoreboard();
+        team.disband(player);
         return true;
     }
 
     @Override
     public List<String> getSubcommandArgs(Player player, String[] args) {
-        List<String> lst = new ArrayList<>();
-        for (int i = 1; i <= pluginTeams.size(); i++) {
-            lst.add(String.valueOf(i));
-        }
-        return lst;
+        return null;
     }
 }
-/**
- * REWORK PLUGIN STRUCTURE - WHENEVER YOU DISBAND THE ORDER OF THE TEAMS GETS MESSED UP - NEED TO DETECT NEXT ONE TO FILL IN
- * COLOUR OF NAME TAG DOES NOT WORKING PROPERLY
- */

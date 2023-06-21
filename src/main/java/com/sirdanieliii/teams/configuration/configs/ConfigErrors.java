@@ -1,6 +1,6 @@
-package com.sirdanieliii.teams.commands.configuration.configs;
+package com.sirdanieliii.teams.configuration.configs;
 
-import com.sirdanieliii.teams.commands.configuration.ConfigYML;
+import com.sirdanieliii.teams.configuration.ConfigYML;
 
 public class ConfigErrors extends ConfigYML {
 

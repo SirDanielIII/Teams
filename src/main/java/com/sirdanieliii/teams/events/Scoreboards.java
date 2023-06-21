@@ -1,9 +1,7 @@
-package com.sirdanieliii.SD_SMP.events;
+package com.sirdanieliii.teams.events;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.scoreboard.DisplaySlot;
-import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.ScoreboardManager;
 
 import java.util.HashMap;
@@ -11,10 +9,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
-import static com.sirdanieliii.SD_SMP.SD_SMP.getPlugin;
-import static com.sirdanieliii.SD_SMP.configuration.ConfigManager.healthUnderNameText;
-import static com.sirdanieliii.SD_SMP.configuration.ConfigManager.healthUnderNameUpdate;
-import static com.sirdanieliii.SD_SMP.utilities.Utilities.translateMsgClr;
+import static com.sirdanieliii.teams.Teams.getThisPlugin;
+import static com.sirdanieliii.teams.configuration.ConfigManager.scoreboardUpdate;
 
 public class Scoreboards {
     public static ScoreboardManager manager = Bukkit.getScoreboardManager();
@@ -27,24 +23,9 @@ public class Scoreboards {
         this.uuid = uuid;
     }
 
-    public static void registerHealthScoreboard() {
-        Objective health = scoreboard.registerNewObjective("player_health", "dummy", ""); // Name, Criteria / Objective, Display Name
-        health.setDisplaySlot(DisplaySlot.BELOW_NAME); // Always will have a number score (int) before it
-        health.setDisplayName(translateMsgClr(healthUnderNameText));
-    }
-
-    public static void reloadHealthScoreboard() {
-        disableHealthScoreboard();
-        registerHealthScoreboard();
+    public static void reloadScoreboard() {
         scoreboardTasks = new HashMap<>(); // Reset Map / "lists of runnable tasks"
         addAllPlayersToScoreboard();
-    }
-
-    public static void disableHealthScoreboard() {
-        // Deregister scoreboard objective
-        if (scoreboard.getObjective("player_health") != null) Objects.requireNonNull(scoreboard.getObjective("player_health")).unregister();
-        // Stop all player Scoreboard() tasks
-        for (UUID uuid : scoreboardTasks.keySet()) scoreboardTasks.get(uuid).stopThisScoreboardTask(scoreboardTasks);
     }
 
     public static void addAllPlayersToScoreboard() {
@@ -63,13 +44,9 @@ public class Scoreboards {
     }
 
     public void runPlayerScoreboard(Player player) {
-        taskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(getPlugin(), () -> {
-            // Update health scoreboard below player's name
-            Objective obj = scoreboard.getObjective(DisplaySlot.BELOW_NAME);
-            // Set score to player's health
-            Objects.requireNonNull(obj).getScore(player.getName()).setScore((int) Math.ceil(player.getHealth()));
+        taskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(getThisPlugin(), () -> {
             // Update scoreboard on player's end
             player.setScoreboard(scoreboard);
-        }, 0, healthUnderNameUpdate);
+        }, 0, scoreboardUpdate);
     }
 }

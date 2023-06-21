@@ -1,17 +1,19 @@
-package com.sirdanieliii.teams.commands.subcommands.teams;
+package com.sirdanieliii.teams.commands.subcommands;
 
 import com.sirdanieliii.teams.commands.SubCommand;
+import com.sirdanieliii.teams.BasicTeam;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
+import static com.sirdanieliii.teams.Utilities.replaceStr;
 import static com.sirdanieliii.teams.Utilities.translateMsgClr;
-import static com.sirdanieliii.teams.commands.CommandManager.cmdHeader;
-import static com.sirdanieliii.teams.commands.configuration.ConfigManager.*;
-import static com.sirdanieliii.teams.events.Scoreboards.addAllPlayersToScoreboard;
+import static com.sirdanieliii.teams.configuration.ConfigManager.*;
+import static com.sirdanieliii.teams.BasicTeam.getChatColor;
+import static com.sirdanieliii.teams.BasicTeam.getNextTeamNumber;
 import static com.sirdanieliii.teams.events.Scoreboards.scoreboard;
 
 public class Create extends SubCommand {
@@ -37,34 +39,46 @@ public class Create extends SubCommand {
 
     @Override
     public boolean perform(Player player, String[] args) {
+        if (!(player.hasPermission("teams.create"))) {
+            player.sendMessage(errorMessage("permission"));
+            return false;
+        }
+        BasicTeam t = pluginPlayerData.get(player);
+        if (t != null) {
+            player.sendMessage(errorMessage("currently_in_team"));
+            return false;
+        }
         if (args.length == 1) { // teams create
-            ChatColor colour = getRandomColor();
-            if (colour == null) {
-                player.sendMessage(errorMessage("not_valid_colour"));
-                return false;
+            int teamNum = getNextTeamNumber();
+            BasicTeam team = new BasicTeam(scoreboard, teamNum);
+            team.addPlayer(true, player);
+            player.sendMessage(replaceStr(cmdHeader + " " + messages.get("created_team"), "{team}", team.toString()));
+            for (Player p : Bukkit.getOnlinePlayers()) {
+                if (!p.equals(player)) {
+                    p.sendMessage(translateMsgClr(cmdHeader) + " " + replaceStr(messages.get("announce_new_team"),
+                            "{player}", player.getName(), "{team}", team.toString()));
+                }
             }
-            int teamNumber = numberOfTeams() + 1;
-            scoreboard.registerNewTeam(String.valueOf(teamNumber));
-            teams.getConfig().set(String.format("teams.%s.colour", teamNumber), colour.name());
-            teams.getConfig().set(String.format("teams.%s.players", teamNumber), Collections.singletonList(player.getName()));
-            teams.save();
-            addAllPlayersToScoreboard();
-            player.sendMessage(translateMsgClr(cmdHeader("teams") + "Created & joined Team " + teamNumber));
             return true;
-        } else if (args.length == 2) {
+        } else if (args.length == 2) { // teams create [colour]
             ChatColor colour = getChatColor(args[1]);
             if (colour == null) {
                 player.sendMessage(errorMessage("not_valid_colour"));
                 return false;
             }
-            int teamNumber = numberOfTeams() + 1;
-            scoreboard.registerNewTeam(String.valueOf(teamNumber));
-            teams.getConfig().set(String.format("teams.%s.colour", teamNumber), args[1].toUpperCase());
-            teams.getConfig().set(String.format("teams.%s.players", teamNumber), Collections.singletonList(player.getName()));
-            teams.save();
-            addAllPlayersToScoreboard();
-            player.sendMessage(translateMsgClr(cmdHeader("teams") + "Created & joined Team " + teamNumber));
+            int teamNum = getNextTeamNumber();
+            BasicTeam team = new BasicTeam(scoreboard, teamNum, colour);
+            team.addPlayer(true, player);
+            player.sendMessage(replaceStr(cmdHeader + " " + messages.get("created_team"), "{team}", team.toString()));
+            for (Player p : Bukkit.getOnlinePlayers()) {
+                if (!p.equals(player)) {
+                    p.sendMessage(translateMsgClr(cmdHeader) + " " + replaceStr(messages.get("announce_new_team"),
+                            "{player}", player.getName(), "{team}", team.toString()));
+                }
+            }
             return true;
+        } else if (args.length > 2) {
+            player.sendMessage(errorMessage("too_many_arguments"));
         }
         return false;
     }

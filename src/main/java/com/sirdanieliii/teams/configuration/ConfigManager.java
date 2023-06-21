@@ -1,8 +1,8 @@
-package com.sirdanieliii.teams.commands.configuration;
+package com.sirdanieliii.teams.configuration;
 
-import com.sirdanieliii.teams.commands.configuration.configs.ConfigErrors;
-import com.sirdanieliii.teams.commands.configuration.configs.ConfigMain;
-import com.sirdanieliii.teams.commands.configuration.configs.ConfigTeams;
+import com.sirdanieliii.teams.configuration.configs.ConfigErrors;
+import com.sirdanieliii.teams.configuration.configs.ConfigMain;
+import com.sirdanieliii.teams.configuration.configs.ConfigTeams;
 import com.sirdanieliii.teams.BasicTeam;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -50,23 +50,23 @@ public class ConfigManager {
         }
         // Load teams
         try {
-            for (String key : Objects.requireNonNull(configTeams.getConfig().getConfigurationSection("teams")).getKeys(false)) {
-                if (validConfig(key)) {
-                    int teamNum = configTeams.getConfig().getInt(String.format("teams.%s.colour", key));
+            for (String num : Objects.requireNonNull(configTeams.getConfig().getConfigurationSection("teams")).getKeys(false)) {
+                if (validConfig(num)) {
+                    int teamNum = parseNumber(num);
                     BasicTeam team = new BasicTeam(
                             scoreboard,
                             teamNum,
-                            getChatColor(Objects.requireNonNull(configTeams.getConfig().getString(String.format("teams.%s.colour", key)))));
+                            getChatColor(Objects.requireNonNull(configTeams.getConfig().getString(String.format("teams.%s.colour", num)))));
                     pluginTeams.put(teamNum, team);
-                    for (String playerName : Objects.requireNonNull(configTeams.getConfig().getConfigurationSection(String.format("teams.%s.players", key))).getKeys(false)) {
+                    for (String playerName : Objects.requireNonNull(configTeams.getConfig().getConfigurationSection(String.format("teams.%s.players", num))).getKeys(false)) {
                         Player player = Bukkit.getPlayer(playerName);
                         if (player != null) { // Player is online
                             team.addPlayer(false, player);
                         }
                     }
                 } else {
-                    configTeams.deleteKey(key);
-                    getThisPlugin().getLogger().warning("Deleted " + key + " in teams.yml because it was invalid");
+                    configTeams.deleteKey(num);
+                    getThisPlugin().getLogger().warning("Deleted " + num + " in teams.yml because it was invalid");
                 }
             }
             getThisPlugin().getLogger().info(String.format("Loaded %d teams: %s", numberOfTeams(), pluginTeams.values()));
