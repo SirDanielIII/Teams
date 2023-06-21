@@ -1,0 +1,7 @@
+name: Teams
+version: '${project.version}'
+main: com.sirdanieliii.teams.Teams
+api-version: 1.16
+authors: [Sir Daniel III]
+description: Quick and simple plugin to group up players into teams (cosmetic only- does not alter any game mechanics)
+website: https://www.youtube.com/@SirDanielIII/

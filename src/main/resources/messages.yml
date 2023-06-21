@@ -1,0 +1,48 @@
+# --- DO NOT TOUCH THESE ---------------
+config-version: 1
+
+teams_create: "/teams create [colour]"
+teams_disband: "/teams disband"
+teams_invite: "/teams invite [player(s)]"
+teams_join: "/teams join [number]"
+teams_leave: "/teams leave"
+teams_reload: "/teams reload"
+# --------------------------------------
+# COLOUR FORMATTING GUIDE (Colours require string to be surrounded by quotes)
+#  &0	Black
+#  &1	Dark Blue
+#  &2	Dark Green
+#  &3	Dark Aqua
+#  &4	Dark Red
+#  &5	Dark Purple
+#  &6	Gold
+#  &7	Gray
+#  &8	Dark Gray
+#  &9	Blue
+#  &A	Green
+#  &B	Aqua
+#  &C	Red
+#  &D	Light Purple
+#  &E	Yellow
+#  &F	White
+#  &K	Obfuscated (Magic / Enchantment Table)
+#  &L	Bold
+#  &M	Strikethrough
+#  &N	Underline
+#  &O	Italic
+#  &R	Reset
+#  \n   Next Line
+
+# CUSTOM COLOURS
+# Add '&' before hex code (not case-sensitive)
+# Example for Pink: &#FFC0CB or &#ffc0cb
+# --------------------------------------
+
+error_header: "&4[&C&L!&R&4]"
+error_clr: "&C"
+
+# Command Errors
+missing_colour: "Missing colour!"
+not_in_team: "You are not currently in a team!"
+not_valid_colour: "That is not a valid colour!"
+not_valid_team: "That is not a valid team!"

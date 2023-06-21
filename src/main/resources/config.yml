@@ -1,0 +1,41 @@
+# --- DO NOT TOUCH THIS ----------------
+config-version: 2
+# --------------------------------------
+# COLOUR FORMATTING GUIDE (Colours require string to be surrounded by quotes)
+#  &0	Black
+#  &1	Dark Blue
+#  &2	Dark Green
+#  &3	Dark Aqua
+#  &4	Dark Red
+#  &5	Dark Purple
+#  &6	Gold
+#  &7	Gray
+#  &8	Dark Gray
+#  &9	Blue
+#  &A	Green
+#  &B	Aqua
+#  &C	Red
+#  &D	Light Purple
+#  &E	Yellow
+#  &F	White
+#  &K	Obfuscated (Magic / Enchantment Table)
+#  &L	Bold
+#  &M	Strikethrough
+#  &N	Underline
+#  &O	Italic
+#  &R	Reset
+#  \n   Next Line
+
+# CUSTOM COLOURS
+# Add '&' before hex code (not case-sensitive)
+# Example for Pink: &#FFC0CB or &#ffc0cb
+# --------------------------------------
+
+# Name that appears in /smp command
+name: '&#f50057&LSMP'
+
+# Mostly for logging purposes
+cmd_header: '&A[&FSD_SMP&A]'
+
+# Teams
+teams: [ ]
