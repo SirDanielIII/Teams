@@ -196,17 +196,20 @@ public class BasicTeam {
 
     @Nullable
     public static BasicTeam detectPlayerTeam(Player player) {
-        for (String num : Objects.requireNonNull(configTeams.getConfig().getConfigurationSection("teams")).getKeys(false)) {
-            if (validConfig(num)) {
-                List<String> players = configTeams.getConfig().getStringList(String.format("teams.%s.players", num));
-                for (String uuid : players) {
-                    if (player.getUniqueId().toString().equalsIgnoreCase(uuid)) {
-                        return new BasicTeam(scoreboard,
-                                Integer.parseInt(num),
-                                getChatColor(Objects.requireNonNull(configTeams.getConfig().getString(String.format("teams.%s.colour", num)))));
+        try {
+            for (String num : Objects.requireNonNull(configTeams.getConfig().getConfigurationSection("teams")).getKeys(false)) {
+                if (validConfig(num)) {
+                    List<String> players = configTeams.getConfig().getStringList(String.format("teams.%s.players", num));
+                    for (String uuid : players) {
+                        if (player.getUniqueId().toString().equalsIgnoreCase(uuid)) {
+                            return new BasicTeam(scoreboard,
+                                    Integer.parseInt(num),
+                                    getChatColor(Objects.requireNonNull(configTeams.getConfig().getString(String.format("teams.%s.colour", num)))));
+                        }
                     }
                 }
             }
+        } catch (NullPointerException ignored) {
         }
         return null;
     }
