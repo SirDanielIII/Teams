@@ -14,13 +14,14 @@ A simple plugin that can group players together in numbered teams.
 /teams join [number]
 /teams kick [...players]
 /teams leave
+/teamsadmin 
 </pre>
 
 ## Admin Commands
 
 `requires teams.admin`
 <pre>
-/teamsadmin
+/teamsadmin reload
 </pre>
 
 ## Permissions
