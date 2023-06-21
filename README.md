@@ -8,6 +8,7 @@ A simple plugin that can group players together in numbered teams.
 ## Player Commands
 
 <pre>
+/teams
 /teams create [colour]
 /teams disband
 /teams invite [...players]
