@@ -39,12 +39,12 @@ public class Leave extends SubCommand {
         }
         BasicTeam team = pluginPlayerData.get(player);
         if (team == null) {
-            player.sendMessage("not_in_team");
+            player.sendMessage(errorMessage("not_in_team"));
             return false;
         }
-        team.removePlayer(player);
-        player.sendMessage(translateMsgClr(cmdHeader) + replaceStr(messages.get("left_team"), "{team}", team.toString()));
-        team.announceMsg(translateMsgClr(cmdHeader) + replaceStr(messages.get("has_left_team"), "{player}", player.getName()));
+        team.removePlayer(true, player);
+        player.sendMessage(translateMsgClr(cmdHeader) + " " + replaceStr(messages.get("left_team"), "{team}", team.toString()));
+        team.announceMsg(translateMsgClr(cmdHeader) + " " + replaceStr(messages.get("has_left_team"), "{player}", player.getName()));
         return true;
     }
 

@@ -42,8 +42,12 @@ public class Join extends SubCommand {
             return false;
         }
         BasicTeam t = pluginPlayerData.get(player);
-        if (t == null) {
-            player.sendMessage("not_in_team");
+        if (t != null) {
+            player.sendMessage(errorMessage("currently_in_team"));
+            return false;
+        }
+        if (args.length == 1) {
+            player.sendMessage(errorMessage("missing_team"));
             return false;
         }
         if (args.length == 2) { // teams join [number]
@@ -53,9 +57,9 @@ public class Join extends SubCommand {
                 return false;
             }
             BasicTeam team = new BasicTeam(scoreboard, teamNumber);
-            team.announceMsg(replaceStr(messages.get("has_joined_team"), "{player}", player.getName()));
+            team.announceMsg(translateMsgClr(cmdHeader) + " " + replaceStr(messages.get("has_joined_team"), "{player}", player.getName()));
             team.addPlayer(true, player);
-            player.sendMessage(translateMsgClr(cmdHeader + " " + messages.get("joined_team")));
+            player.sendMessage(translateMsgClr(cmdHeader) + " " + replaceStr(messages.get("joined_team"), "{team}", team.toString()));
         } else if (args.length > 2) {
             player.sendMessage(errorMessage("too_many_arguments"));
         }

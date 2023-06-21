@@ -51,8 +51,9 @@ public class Create extends SubCommand {
         if (args.length == 1) { // teams create
             int teamNum = getNextTeamNumber();
             BasicTeam team = new BasicTeam(scoreboard, teamNum);
+            team.register();
             team.addPlayer(true, player);
-            player.sendMessage(replaceStr(cmdHeader + " " + messages.get("created_team"), "{team}", team.toString()));
+            player.sendMessage(translateMsgClr(cmdHeader) + " " + replaceStr(messages.get("created_team"), "{team}", team.toString()));
             for (Player p : Bukkit.getOnlinePlayers()) {
                 if (!p.equals(player)) {
                     p.sendMessage(translateMsgClr(cmdHeader) + " " + replaceStr(messages.get("announce_new_team"),
@@ -68,8 +69,9 @@ public class Create extends SubCommand {
             }
             int teamNum = getNextTeamNumber();
             BasicTeam team = new BasicTeam(scoreboard, teamNum, colour);
+            team.register();
             team.addPlayer(true, player);
-            player.sendMessage(replaceStr(cmdHeader + " " + messages.get("created_team"), "{team}", team.toString()));
+            player.sendMessage(translateMsgClr(cmdHeader) + " " + replaceStr(messages.get("created_team"), "{team}", team.toString()));
             for (Player p : Bukkit.getOnlinePlayers()) {
                 if (!p.equals(player)) {
                     p.sendMessage(translateMsgClr(cmdHeader) + " " + replaceStr(messages.get("announce_new_team"),

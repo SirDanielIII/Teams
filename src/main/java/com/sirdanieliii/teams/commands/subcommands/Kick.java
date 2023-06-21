@@ -43,7 +43,7 @@ public class Kick extends SubCommand {
         }
         BasicTeam team = pluginPlayerData.get(player);
         if (team == null) {
-            player.sendMessage("not_in_team");
+            player.sendMessage(errorMessage("not_in_team"));
             return false;
         }
         if (args.length == 1) {
@@ -53,7 +53,7 @@ public class Kick extends SubCommand {
             for (String i : Arrays.copyOfRange(args, 1, args.length)) {
                 Player recipient = Bukkit.getPlayer(i);
                 if (recipient == null) continue;
-                team.removePlayer(recipient);
+                team.removePlayer(true, recipient);
                 player.sendMessage(translateMsgClr(cmdHeader) + " " + replaceStr(messages.get("kicked_player"),
                         "{player}", recipient.getName(), "{team}", team.toString()));
                 team.announceMsg(translateMsgClr(cmdHeader) + " " + replaceStr(messages.get("has_kicked_someone_out_of_team"),

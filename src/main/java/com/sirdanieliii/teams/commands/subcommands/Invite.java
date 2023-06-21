@@ -46,7 +46,7 @@ public class Invite extends SubCommand {
         }
         BasicTeam team = pluginPlayerData.get(player);
         if (team == null) {
-            player.sendMessage("not_in_team");
+            player.sendMessage(errorMessage("not_in_team"));
             return false;
         }
         if (args.length == 1) {
@@ -63,7 +63,7 @@ public class Invite extends SubCommand {
                 msg.setHoverEvent(new HoverEvent(
                         HoverEvent.Action.SHOW_TEXT, new Text(translateMsgClr("&7Click on this message to join!"))));
                 recipient.spigot().sendMessage(msg);
-                player.sendMessage(replaceStr(cmdHeader + " " + messages.get("invite_success"), "{player}", recipient.getName()));
+                player.sendMessage(translateMsgClr(cmdHeader) + " " + replaceStr(messages.get("invite_success"), "{player}", recipient.getName()));
             }
             return true;
         }

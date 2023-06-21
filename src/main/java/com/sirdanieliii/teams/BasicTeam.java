@@ -18,21 +18,19 @@ import static com.sirdanieliii.teams.events.Scoreboards.scoreboard;
 public class BasicTeam {
     private final Scoreboard board;
     private final int number; // This is the team name
-    private final ChatColor colour;
+    private ChatColor colour;
     private Team team;
 
     public BasicTeam(Scoreboard board, int number) {
         this.board = board;
         this.number = number;
-        colour = getRandomColour();
-        register();
+        initializeTeam();
     }
 
     public BasicTeam(Scoreboard board, int number, ChatColor colour) {
         this.board = board;
         this.number = number;
-        this.colour = colour;
-        register();
+        initializeTeam(colour);
     }
 
     @Override
@@ -47,57 +45,83 @@ public class BasicTeam {
      * @return true if valid, false otherwise
      */
     public static boolean validConfig(String key) {
+        configTeams.reload();
         try {
             int number = Integer.parseInt(key); // See if key is a number
             String clr = configTeams.getConfig().getString(String.format("teams.%s.colour", key));
-            if (clr != null && number != 0) return ChatColor.getByChar(clr) != null; // Validate colour from string
+            if (clr != null && number != 0) return getChatColor(clr) != null; // Validate colour from string
         } catch (NullPointerException | NumberFormatException ignored) {
         }
         return false; // Return false by default (or if clr == null)
     }
 
-    private void register() {
-        team = board.registerNewTeam(String.valueOf(number));
+    private void initializeTeam() {
+        team = board.getTeam(String.valueOf(number));
+        if (team == null) {
+            team = board.registerNewTeam(String.valueOf(number));
+            colour = getRandomColour();
+        } else {
+            colour = team.getColor();
+        }
+    }
+
+    private void initializeTeam(ChatColor colour) {
+        team = board.getTeam(String.valueOf(number));
+        if (team == null) {
+            team = board.registerNewTeam(String.valueOf(number));
+        }
+        this.colour = colour;
+    }
+
+    public void register() {
         team.setColor(colour);
-        team.setPrefix(colour + "[" + ChatColor.WHITE + number + colour + "]");
+        team.setPrefix(getPrefix());
         pluginTeams.put(number, this);
         addTeamToConfig(this);
     }
 
+    public String getPrefix() {
+        return translateMsgClr(colour + "&L[&F" + number + colour + "&L] ");
+    }
+
     public void disband(Player player) {
         // Send message
+        configTeams.reload();
         List<String> players = configTeams.getConfig().getStringList(String.format("teams.%s.players", getNumber()));
+        Bukkit.broadcastMessage(players.toString());
         for (String i : players) {
             Player recipient = Bukkit.getPlayer(i);
             if (recipient == null) continue;
-            recipient.sendMessage(translateMsgClr(cmdHeader) + " " + replaceStr(messages.get("disbanded_team"),
+            recipient.sendMessage(translateMsgClr(cmdHeader) + " " + replaceStr(messages.get("has_disbanded_team"),
                     "{player}", player.getName(), "{team}", toString()));
-            pluginPlayerData.put(recipient, null);
+            removePlayer(false, recipient);
         }
         // Remove team
         team.unregister();
         pluginTeams.remove(number);
-        configTeams.deleteKey(String.format("teams.%s.colour", getNumber()));
+        configTeams.deleteKey(String.format("teams.%s", getNumber()));
         getThisPlugin().getLogger().info(String.format("Removed %s from teams.yml", this));
     }
 
-    public void addPlayer(boolean addToConf, Player... players) {
+    public void addPlayer(boolean editConf, Player... players) {
         for (Player p : players) {
-            team.addEntry(p.getUniqueId().toString());
+            team.addEntry(p.getName());
+            p.setDisplayName(getPrefix() + ChatColor.RESET + colour + p.getName());
             pluginPlayerData.put(p, this);
-            if (addToConf) {
+            if (editConf) {
                 addToConfigStrList(String.format("teams.%s.players", number), p.getUniqueId().toString());
             }
         }
     }
 
-    public void removePlayer(Player player) {
-        team.removeEntry(player.getUniqueId().toString());
+    public void removePlayer(boolean editConf, Player player) {
+        team.removeEntry(player.getName());
         pluginPlayerData.put(player, null);
-        removeFromConfigStrList(String.format("teams.%d.players", getNumber()), player.getUniqueId().toString());
+        if (editConf) removeFromConfigStrList(String.format("teams.%d.players", getNumber()), player.getUniqueId().toString());
     }
 
     public void announceMsg(String msg, Player... ignore) {
+        configTeams.reload();
         // Send message
         List<String> players = configTeams.getConfig().getStringList(String.format("teams.%s.players", getNumber()));
         List<Player> ignoredPlayers = new ArrayList<>(List.of(ignore));
@@ -164,6 +188,7 @@ public class BasicTeam {
     }
 
     public static void addTeamToConfig(BasicTeam team) {
+        configTeams.reload();
         configTeams.getConfig().set(String.format("teams.%s.colour", team.getNumber()), team.getColour().name());
         configTeams.getConfig().set(String.format("teams.%s.players", team.getNumber()), new ArrayList<>());
         configTeams.save();
@@ -200,6 +225,7 @@ public class BasicTeam {
     }
 
     public static void addToConfigStrList(String path, String entry) {
+        configTeams.reload();
         List<String> lst = configTeams.getConfig().getStringList(path);
         lst.add(entry);
         configTeams.getConfig().set(path, lst);
@@ -207,6 +233,7 @@ public class BasicTeam {
     }
 
     public static void removeFromConfigStrList(String path, String entry) {
+        configTeams.reload();
         List<String> lst = configTeams.getConfig().getStringList(path);
         lst.remove(entry);
         configTeams.getConfig().set(path, lst);
@@ -215,6 +242,7 @@ public class BasicTeam {
 
     @Nullable
     public static BasicTeam detectPlayerTeam(Player player) {
+        configTeams.reload();
         try {
             for (String num : Objects.requireNonNull(configTeams.getConfig().getConfigurationSection("teams")).getKeys(false)) {
                 if (validConfig(num)) {

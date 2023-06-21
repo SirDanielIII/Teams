@@ -9,7 +9,7 @@ commands:
   teams:
     description: A family of commands that allows you to create, disband, invite, join, kick, and leave teams
     usage: /teams create|disband|invite|join|kick|leave
-  teamsreload:
+  teamsadmin:
     description: Reloads all configs, settings and tasks for this plugin
     usage: /teamsadmin
 permissions:

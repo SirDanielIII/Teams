@@ -14,7 +14,7 @@ import static com.sirdanieliii.teams.configuration.ConfigManager.scoreboardUpdat
 
 public class Scoreboards {
     public static ScoreboardManager manager = Bukkit.getScoreboardManager();
-    public static org.bukkit.scoreboard.Scoreboard scoreboard = Objects.requireNonNull(manager).getNewScoreboard();
+    public static org.bukkit.scoreboard.Scoreboard scoreboard = Objects.requireNonNull(manager).getMainScoreboard();
     public static Map<UUID, Scoreboards> scoreboardTasks = new HashMap<>(); // To store player Scoreboard() objects
     protected int taskID;
     protected UUID uuid;

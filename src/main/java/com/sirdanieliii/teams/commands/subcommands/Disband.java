@@ -6,6 +6,8 @@ import org.bukkit.entity.Player;
 
 import java.util.List;
 
+import static com.sirdanieliii.teams.Utilities.replaceStr;
+import static com.sirdanieliii.teams.Utilities.translateMsgClr;
 import static com.sirdanieliii.teams.configuration.ConfigManager.*;
 
 public class Disband extends SubCommand {
@@ -37,9 +39,11 @@ public class Disband extends SubCommand {
         }
         BasicTeam team = pluginPlayerData.get(player);
         if (team == null) {
-            player.sendMessage("not_in_team");
+            player.sendMessage(errorMessage("not_in_team"));
             return false;
         }
+        player.sendMessage(translateMsgClr(cmdHeader) + " " + replaceStr(messages.get("disbanded_team"),
+                "{team}", team.toString()));
         team.disband(player);
         return true;
     }

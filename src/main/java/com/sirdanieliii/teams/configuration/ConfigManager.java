@@ -66,7 +66,7 @@ public class ConfigManager {
                         }
                     }
                 } else {
-                    configTeams.deleteKey(num);
+                    configTeams.deleteKey(String.format("teams.%s", num));
                     getThisPlugin().getLogger().warning("Deleted " + num + " in teams.yml because it was invalid");
                 }
             }
