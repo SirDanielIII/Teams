@@ -25,11 +25,11 @@ A simple plugin that can group players together in numbered teams.
 ## Permissions
 
 <pre>
-* teams.create: Create a team (default: true)
-* teams.disband: Disband a team (default: true)
-* teams.invite: Invite a player to the team (default: true)
-* teams.join: Join a team (default: true)
-* teams.kick: Kick a player out of the team (default: true)
-* teams.leave: Leave the team (default: true)
-* teams.admin: Allows use of plugin admin commands, such as teamsreload (default: op)
+teams.create: Create a team (default: true)
+teams.disband: Disband a team (default: true)
+teams.invite: Invite a player to the team (default: true)
+teams.join: Join a team (default: true)
+teams.kick: Kick a player out of the team (default: true)
+teams.leave: Leave the team (default: true)
+teams.admin: Allows use of plugin admin commands, such as teamsreload (default: op)
 </pre>
