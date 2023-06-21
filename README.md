@@ -12,6 +12,7 @@ A simple plugin that can group players together in numbered teams.
 /teams disband
 /teams invite [...players]
 /teams join [number]
+/teams kick [...players]
 /teams leave
 </pre>
 
