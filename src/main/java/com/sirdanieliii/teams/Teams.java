@@ -31,7 +31,7 @@ public final class Teams extends JavaPlugin {
         reloadConfigs();
         getServer().getPluginManager().registerEvents(new Events(), this);
         Objects.requireNonNull(getCommand("teams")).setExecutor(new CommandManager());
-        Objects.requireNonNull(getCommand("teamsreload")).setExecutor(new TeamsReload());
+        Objects.requireNonNull(getCommand("teamsadmin")).setExecutor(new TeamsReload());
         addAllPlayersToScoreboard(); // In case of server forced plugin reloads
         this.getLogger().info(String.format("Version %s has finished loading", this.getDescription().getVersion()));
     }

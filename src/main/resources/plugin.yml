@@ -11,7 +11,7 @@ commands:
     usage: /teams create|disband|invite|join|kick|leave
   teamsreload:
     description: Reloads all configs, settings and tasks for this plugin
-    usage: /teamsreload
+    usage: /teamsadmin
 permissions:
   teams.create:
     description: Create a team

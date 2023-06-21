@@ -19,7 +19,7 @@ A simple plugin that can group players together in numbered teams.
 
 `requires teams.admin`
 <pre>
-/teamsreload
+/teamsadmin
 </pre>
 
 ## Permissions

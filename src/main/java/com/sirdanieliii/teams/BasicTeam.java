@@ -121,7 +121,25 @@ public class BasicTeam {
         if (msg.length() == 2) {
             if (msg.charAt(0) == '&') return ChatColor.getByChar(msg.charAt(1));
         }
-        return ChatColor.getByChar(msg.toUpperCase()); // Matches enum name
+        return switch (msg.toUpperCase()) {
+            case "BLACK" -> ChatColor.BLACK;
+            case "DARK_BLUE" -> ChatColor.DARK_BLUE;
+            case "DARK_GREEN" -> ChatColor.DARK_GREEN;
+            case "DARK_AQUA" -> ChatColor.DARK_AQUA;
+            case "DARK_RED" -> ChatColor.DARK_RED;
+            case "DARK_PURPLE" -> ChatColor.DARK_PURPLE;
+            case "GOLD" -> ChatColor.GOLD;
+            case "GRAY" -> ChatColor.GRAY;
+            case "DARK_GRAY" -> ChatColor.DARK_GRAY;
+            case "BLUE" -> ChatColor.BLUE;
+            case "GREEN" -> ChatColor.GREEN;
+            case "AQUA" -> ChatColor.AQUA;
+            case "RED" -> ChatColor.RED;
+            case "LIGHT_PURPLE" -> ChatColor.LIGHT_PURPLE;
+            case "YELLOW" -> ChatColor.YELLOW;
+            case "WHITE" -> ChatColor.WHITE;
+            default -> null;
+        };
     }
 
     public static ChatColor getRandomColour() {
@@ -172,12 +190,13 @@ public class BasicTeam {
 
     public static int getNextTeamNumber() {
         List<Integer> numbers = getAllTeamsOrdered();
-        for (int i = 0; i < numbers.size() - 1; i++) {
-            if (numbers.get(i) + 1 != numbers.get(i + 1)) {
-                return numbers.get(i) + 1;
-            }
+        int n = numbers.size() + 1; // Including the missing number
+        int expectedSum = (n * (n + 1)) / 2;
+        int actualSum = 0;
+        for (int number : numbers) {
+            actualSum += number;
         }
-        return 1;
+        return expectedSum - actualSum;
     }
 
     public static void addToConfigStrList(String path, String entry) {
