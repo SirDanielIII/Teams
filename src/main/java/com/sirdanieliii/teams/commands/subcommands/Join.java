@@ -7,7 +7,8 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.sirdanieliii.teams.BasicTeam.*;
+import static com.sirdanieliii.teams.BasicTeam.getAllTeamsOrdered;
+import static com.sirdanieliii.teams.BasicTeam.parseNumber;
 import static com.sirdanieliii.teams.Utilities.replaceStr;
 import static com.sirdanieliii.teams.Utilities.translateMsgClr;
 import static com.sirdanieliii.teams.configuration.ConfigManager.*;

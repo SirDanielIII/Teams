@@ -1,7 +1,7 @@
 package com.sirdanieliii.teams.commands.subcommands;
 
-import com.sirdanieliii.teams.commands.SubCommand;
 import com.sirdanieliii.teams.BasicTeam;
+import com.sirdanieliii.teams.commands.SubCommand;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -9,7 +9,10 @@ import net.md_5.bungee.api.chat.hover.content.Text;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 
 import static com.sirdanieliii.teams.Utilities.*;
 import static com.sirdanieliii.teams.configuration.ConfigManager.*;

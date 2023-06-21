@@ -1,7 +1,7 @@
 package com.sirdanieliii.teams.commands.subcommands;
 
-import com.sirdanieliii.teams.commands.SubCommand;
 import com.sirdanieliii.teams.BasicTeam;
+import com.sirdanieliii.teams.commands.SubCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -9,11 +9,11 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.sirdanieliii.teams.BasicTeam.getChatColor;
+import static com.sirdanieliii.teams.BasicTeam.getNextTeamNumber;
 import static com.sirdanieliii.teams.Utilities.replaceStr;
 import static com.sirdanieliii.teams.Utilities.translateMsgClr;
 import static com.sirdanieliii.teams.configuration.ConfigManager.*;
-import static com.sirdanieliii.teams.BasicTeam.getChatColor;
-import static com.sirdanieliii.teams.BasicTeam.getNextTeamNumber;
 import static com.sirdanieliii.teams.events.Scoreboards.scoreboard;
 
 public class Create extends SubCommand {

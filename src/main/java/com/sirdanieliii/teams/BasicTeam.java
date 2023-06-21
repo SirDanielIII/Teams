@@ -2,7 +2,6 @@ package com.sirdanieliii.teams;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
@@ -10,7 +9,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-import static com.sirdanieliii.teams.BasicTeam.validConfig;
 import static com.sirdanieliii.teams.Teams.getThisPlugin;
 import static com.sirdanieliii.teams.Utilities.replaceStr;
 import static com.sirdanieliii.teams.Utilities.translateMsgClr;

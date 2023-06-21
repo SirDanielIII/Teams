@@ -1,7 +1,7 @@
 package com.sirdanieliii.teams.commands.subcommands;
 
-import com.sirdanieliii.teams.commands.SubCommand;
 import com.sirdanieliii.teams.BasicTeam;
+import com.sirdanieliii.teams.commands.SubCommand;
 import org.bukkit.entity.Player;
 
 import java.util.List;

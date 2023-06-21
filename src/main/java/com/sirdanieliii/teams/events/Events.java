@@ -7,8 +7,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-import static com.sirdanieliii.teams.configuration.ConfigManager.pluginPlayerData;
 import static com.sirdanieliii.teams.BasicTeam.detectPlayerTeam;
+import static com.sirdanieliii.teams.configuration.ConfigManager.pluginPlayerData;
 import static com.sirdanieliii.teams.events.Scoreboards.addPlayerToScoreboard;
 import static com.sirdanieliii.teams.events.Scoreboards.scoreboardTasks;
 

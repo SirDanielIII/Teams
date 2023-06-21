@@ -1,13 +1,14 @@
 package com.sirdanieliii.teams.configuration;
 
+import com.sirdanieliii.teams.BasicTeam;
 import com.sirdanieliii.teams.configuration.configs.ConfigErrors;
 import com.sirdanieliii.teams.configuration.configs.ConfigMain;
 import com.sirdanieliii.teams.configuration.configs.ConfigTeams;
-import com.sirdanieliii.teams.BasicTeam;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Objects;
 
 import static com.sirdanieliii.teams.BasicTeam.*;
 import static com.sirdanieliii.teams.Teams.getThisPlugin;

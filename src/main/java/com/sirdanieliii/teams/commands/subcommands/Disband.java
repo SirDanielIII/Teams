@@ -1,14 +1,12 @@
 package com.sirdanieliii.teams.commands.subcommands;
 
-import com.sirdanieliii.teams.commands.SubCommand;
 import com.sirdanieliii.teams.BasicTeam;
+import com.sirdanieliii.teams.commands.SubCommand;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.sirdanieliii.teams.configuration.ConfigManager.*;
-import static com.sirdanieliii.teams.BasicTeam.getAllTeamsOrdered;
 
 public class Disband extends SubCommand {
     @Override
